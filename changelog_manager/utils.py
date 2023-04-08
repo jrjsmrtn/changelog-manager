@@ -1,5 +1,17 @@
 # pylint: disable=protected-access
+from pathlib import Path
+
 import keepachangelog
+
+
+CHANGELOG_HEADER = """# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+"""
 
 
 class ChangelogManager:
@@ -35,6 +47,16 @@ class ChangelogManager:
             str: current version number
         """
         return self.__current_version
+
+    @classmethod
+    def init(self, changelog_path: str, force: bool = False) -> None:
+        """
+        Create a new changelog file
+        """
+        if Path(changelog_path).exists() and not force:
+            raise FileExistsError
+        with open(changelog_path, "wt") as f:
+            f.write(CHANGELOG_HEADER)
 
     def add(self, change_type: str, change_description: str) -> None:
         """
